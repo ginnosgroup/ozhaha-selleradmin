@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Google地图 </title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<meta charset="utf-8">
+<style>
+  html, body, #map-canvas {
+    height: 100%;
+    margin: 0px;
+    padding: 0px
+  }
+</style>
+</head>
+<body> 
+<div id="map-canvas"></div>
+<!--<script src="http://maps.google.com/maps/api/js?v=3.5&sensor=false&libraries=places"></script>-->
+<!--<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>-->
+<!--<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry"></script>-->
+<script>
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(locationSuccess, locationError,{
+        // 指示浏览器获取高精度的位置，默认为false
+        enableHighAcuracy: true,
+        // 指定获取地理位置的超时时间，默认不限时，单位为毫秒
+        timeout: 5000,
+        // 最长有效期，在重复获取地理位置时，此参数指定多久再次获取位置。
+        maximumAge: 3000
+    });
+}else{
+    alert("Your browser does not support Geolocation!");
+}
+
+function locationError(error){
+    switch(error.code) {
+        case error.TIMEOUT:
+            showError("A timeout occured! Please try again!");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            showError('We can\'t detect your location. Sorry!');
+            break;
+        case error.PERMISSION_DENIED:
+            showError('Please allow geolocation access for this to work.');
+            break;
+        case error.UNKNOWN_ERROR:
+            showError('An unknown error occured!');
+            break;
+    }
+}
+
+function locationSuccess(position){
+    var coords = position.coords;    
+    /*var latlng = new google.maps.LatLng(        
+        coords.latitude,// 纬度        
+        coords.longitude// 经度
+    );*/
+    var currentLat = coords.latitude;
+    var currentLong = coords.longitude;
+       
+    alert('纬度：'+coords.latitude+'经度：'+coords.longitude);
+    //document.getElementById("map-canvas").innerHTML = '纬度：'+coords.latitude+'经度：'+coords.longitude;    
+   /* var map = new google.maps.Map(document.getElementById('map-canvas'), {
+    zoom: 13,
+    center: {lat: coords.latitude, lng: coords.longitude}
+  });
+  	var infowindow = new google.maps.InfoWindow({
+      map: map,
+      position: latlng,
+      content: '配送员当前地点'
+    });
+    map.setCenter(latlng);*/
+    
+}
+
+function showError(info)
+{
+		alert(info);
+}
+</script>
+</body>
+</html>
