@@ -1856,7 +1856,7 @@
   cursor: default;
 }
 .datagrid-row-selected {
-  background: #CCE6FF;
+  background: #00BBEE;/*#CCE6FF;*/
   color: #000;
 }
 .datagrid-row-editing .textbox,

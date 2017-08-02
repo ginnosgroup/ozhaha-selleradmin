@@ -1,5 +1,6 @@
 application/config
 application/.htaccess
 .htaccess
-user_guide
-uploads
+user_guide/*
+uploads/*
+application/cache/*

@@ -182,31 +182,28 @@ public function delete_item(){
 	$delete_items = $post_data['data'];	
 	$updated;
 	$del_row;
+	
 	if($delete_items)
 	{
-		//$item['gmt_modify'] = date('Y-m-d H:i:s');
-		//$item['number'] = 0;
-		$tmp[] = $delete_items;
-		$del_row = $this->to_item_model($tmp)[0];
+		$del_rows = $this->to_item_model($delete_items);
 	}
-	$this->load->database();
-	
-	//var_dump($del_row);
-	if(!empty($del_row))
-	{
-		try{
-			$updated = $this->db->delete($this->db->dbprefix('item'),$del_row);
-		}
-		catch(Exception $ex)
-		{
-			echo 'eror message: ' . $ex->getMesage();
-		}
-	}
-	//$updated = $this->db->delete($this->db->dbprefix('item'),$del_row);
 
-	if($updated)
+	$this->load->database();
+	if(!empty($del_rows))
 	{
-	  $msg = array('msg'=>'ok', 'updated_rows'=>$updated);
+		foreach($del_rows as $del_row)
+		{
+			try{
+			
+			 	$this->db->delete($this->db->dbprefix('item'),$del_row);
+				}
+			catch(Exception $ex)
+			{
+				echo 'eror message: ' . $ex->getMesage();
+			}
+		}
+		$updated = 1;
+	  	$msg = array('msg'=>'ok', 'updated_rows'=>$updated);
 	}
 	else
 	{
@@ -242,7 +239,6 @@ public function get_items_category()
 		$item['category_pair'] = json_encode($row);
 		$out[] = $item;
 	}
-	//var_dump($out);
 	$this->db->close();
 	exit(json_encode($out));
 
@@ -254,7 +250,7 @@ private function get_category_name($id,$seller_id)
 	$query = $this->db->query($query_str);
 	$row = $query->row();
 	$name='';
-	//var_dump($row)
+	
 
 	 return json_encode($row);
 }
@@ -279,14 +275,6 @@ private function to_item_model($update_items)
 			{$temp_item[$k] = $v;}
 		}
 			$update_rows[] =$temp_item;
-
-			// else
-			// {
-			// 	$item['gmt_create'] = date('Y-m-d H:i:s');
-			// 	$item['gmt_modify'] = date('Y-m-d H:i:s');
-			// 	$item['seller_id'] = $seller_id;
-			// 	$insert_rows[] = $item;
-			// }
 	}
 		return $update_rows;
 }
