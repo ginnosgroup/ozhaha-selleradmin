@@ -20,7 +20,7 @@
 <link href="{static_base_url}css/easyui-themes/metro/easyui.css" rel="stylesheet" />
 <link href="{static_base_url}css/easyui-themes/icon.css" rel="stylesheet" />
 <link href="{static_base_url}uploadify/uploadify.css" rel="stylesheet">
-<link href="{static_base_url}css/croppic/croppic.css" rel="stylesheet">
+<!-- <link href="{static_base_url}css/croppic/croppic.css" rel="stylesheet"> -->
 <!-- <link href="./{static_base_url}css/easyui-themes/demo/demo.css" rel="stylesheet" /> -->
 <body>
 <!--  -->
@@ -69,10 +69,11 @@
                             type:'combobox',
                             options:{
                                 valueField:'category_pair',
+                                prompt:'选择品种',
                                 textField:'name',
                                 url:'items_test/get_items_category',
                                 method:'get',
-                                onBeforeLoad:initCategory,
+                                editable:false,
                                 required:true
                             } }
                   ">类目</th>
@@ -121,7 +122,7 @@
      </div>
     <div id="uploadSaveBtns">
     <a href="#" class="btn btn-success"  onclick="savePathToSlot()" style="
-    width:100%;">save</a>
+    width:100%;">确认上传</a>
    </div>
   </div>
  
@@ -143,6 +144,9 @@
   }
   .fixedColumn{
     margin:30px auto;
+    width: 150px;
+    white-space: normal;
+    overflow: auto;
   }
 
  .form-control#keyword {
@@ -161,7 +165,7 @@
     <!-- <script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script> -->
      <script type="text/javascript" src="{static_base_url}uploadify/jquery.uploadify.min.js"></script>
     <script type="text/javascript" src="{static_base_url}js/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="{static_base_url}js/croppic.min.js"></script>
+    <!-- <script type="text/javascript" src="{static_base_url}js/croppic.min.js"></script> -->
 <script>
 $(function(){
 
@@ -199,14 +203,14 @@ $(function(){
   //   console.log(fileArray);
   //   console.log(fidArray);
   // }
-  var i = 0;
+  var tmpItemIndex = 1;
   $('#itemsTable').datagrid({
   onBeforeEdit: function(index,row){
     row.number = row.number||100;
     row.weight = row.weight||999;
     row.can_use_coupon = row.can_use_coupon||1;
-    row.name = row.name||('菜品' + i++); 
-    row.price = row.price||0;
+    row.name = row.name||('菜品' + tmpItemIndex++); 
+    //row.price = row.price||0;
   }
 })
 });
@@ -232,7 +236,7 @@ function formatCategory(val, row)
   if(val) var json = JSON.parse(val);
   var name =''; 
 
-  if(json) return  '<div id='+ json.id + ">" + json.name + '</div>';
+  if(json){ return  '<div id='+ json.id + " >" + json.name + '</div>';}
   else  return '';
 }
 
@@ -242,15 +246,6 @@ var editIndex = undefined;
 
 function endEditing(selectedIndex=''){
   
-  if(selectedIndex)
-  {  
-    if($('#itemsTable').datagrid('validateRow', selectedIndex))
-    {
-      if ($('#itemsTable').datagrid('validateRow', selectedIndex)){
-      $('#itemsTable').datagrid('endEdit', selectedIndex);
-      }
-    }
-  }
 
   if (editIndex == undefined){return true;}
   if ($('#itemsTable').datagrid('validateRow', editIndex)){
@@ -263,16 +258,14 @@ function endEditing(selectedIndex=''){
   }
 }
 
-function initCategory(para){
-
-  console.log(para.textField);
-}
 
 function onDblClickCell(index, field){
   
    // editIndex = undefined;
+  //$('#itemsTable').datagrid('unselectALL');
   if (editIndex != index){
       if (endEditing()){
+        $('#itemsTable').datagrid('unselectAll');
         $('#itemsTable').datagrid('selectRow', index)
                 .datagrid('beginEdit', index);
         var ed = $('#itemsTable').datagrid('getEditor', {index:index,field:field});
@@ -294,8 +287,6 @@ function cancelChanges(){
   {
     var changedRows = $('#itemsTable').datagrid('getChanges');
     alert(changedRows.length + ' rows changed have been undo');
-    //$('#itemsTable').datagrid('rejectChanges');
-    //editIndex = undefined;
   }
   $('#itemsTable').datagrid('rejectChanges');
   editIndex = undefined;
@@ -303,14 +294,12 @@ function cancelChanges(){
 
 function saveChanges()
 {
-    $('#itemsTable').datagrid('validateRow', editIndex);
-    if(endEditing()&&checkValidation())
-    {
-      var changedRows = $('#itemsTable').datagrid('getChanges');
-      //console.log(changedRows);
-      var addRows=[];
-      var updateRows=[];
-      $.each(changedRows,function(index,value){
+    var addRows=[];
+    var updateRows=[];
+    if(endEditing())
+   {
+    var changedRows = $('#itemsTable').datagrid('getChanges');
+    $.each(changedRows,function(index,value){
 
         if(value.id)
         {
@@ -321,31 +310,53 @@ function saveChanges()
           addRows.push(value);
         }
 
-      });
-       //console.log(addRows,updateRows);
+    });
       if((addRows.length>0)&&(updateRows.length>0))
       {
-        alert('forbidden!! cant add and update items at the same time');
+        alert('forbidden!! cant operate add and update at the same time');
         $('#itemsTable').datagrid('rejectChanges');
         $('#itemsTable').datagrid('reload');
       }
       else
       {
+        
+        if(addRows.length>0)
+        {
+          if(checkValidation())
+          {
+            saveAddedItems();
+          }
+          else
+          {
+            alert('fail to add, please make sure all the required filed have been filled.');
+          }
+        }
         if(updateRows.length>0)
         {
-          $.post('items_test/update_items',{data:changedRows},function(data){
-          if(data.msg =='ok')
+          if(endEditing())
           {
-            alert('upadate successed, ' + data.update_rows + ' rows have been changed');
-            //if(data.added_id)
-            $('#itemsTable').datagrid('acceptChanges');
-            $('#itemsTable').datagrid('load');
+            saveUpdatedItems();
           }
-          else{
-            alert('error message' + data.details);
-          }},'json');
+          else
+          {
+            alert('invalid row, please make sure all the required filed have been filled.');
+          }
         }
-        if(addRows.length>0){
+      }
+    }
+    else
+    {
+      alert('invalid row, please make sure all the required filed have been filled.');
+    }
+}
+
+
+function saveAddedItems()
+{
+  var changedRows = $('#itemsTable').datagrid('getChanges','inserted');
+  if(checkValidation())
+  {
+      if(changedRows.length>0){
           $.post('items_test/add_items',{data:changedRows},function(data){
           if(data.msg =='ok')
           {
@@ -356,15 +367,30 @@ function saveChanges()
           else{
             alert('error message' + data.details);
           }},'json');
+          tmpItemIndex = 0;
         }
-      }
-    }
-    else 
-    {
-      alert('error, please make sure all the required fields have been filled.');
-    }
+  }
 
 }
+
+function saveUpdatedItems()
+{
+  var changedRows = $('#itemsTable').datagrid('getChanges');
+  if(changedRows.length>0)
+        {
+          $.post('items_test/update_items',{data:changedRows},function(data){
+          if(data.msg =='ok')
+          {
+            alert('upadate successed, ' + data.update_rows + ' rows have been changed');
+            $('#itemsTable').datagrid('acceptChanges');
+            $('#itemsTable').datagrid('load');
+          }
+          else{
+            alert('error message' + data.details);
+          }},'json');
+        }
+}
+
 function deleteBtn(){
 
  if($('#itemsTable').datagrid('getSelected'))
@@ -402,6 +428,7 @@ function addItem()
 {
   
   checkValidation();
+  endEditing();
   $('#itemsTable').datagrid('insertRow',{
                             index:0,
                             row:{}});
@@ -414,17 +441,18 @@ function addItem()
 function checkValidation()
 {
  
-  var added_num =  $('#itemsTable').datagrid('getSelections').length;
+  var added_num =  $('#itemsTable').datagrid('getChanges','inserted').length;
   for(var i =0;i<added_num;i++)
-  {
-    endEditing(i);
+  {       
+     if ($('#itemsTable').datagrid('validateRow', i)){
+      $('#itemsTable').datagrid('endEdit', i);
+      } 
+     else
+     {
+        return false;
+     }
   }
   
-  for(var i =0;i<added_num;i++)
-  {
-    if(!$('#itemsTable').datagrid('validateRow', i))
-      return false;
-  }
  return true;
 
 }
@@ -467,8 +495,8 @@ function searchItem(){
             {
                   fileArray.push(result[1]);
                   fidArray.push(file.name);
-                  $('#uploadPath').val(fileArray.toString());
-                  $('#file_list').val(fileArray.toString());
+                  $('#uploadPath').val(fileArray.pop());
+                  $('#file_list').val(fileArray.pop());
             }
             else {
 
@@ -517,7 +545,7 @@ function searchItem(){
             }
           });
 
-var str = '<div data-type="upload" href="" class="fixedColumn"' + 'onclick="$(\'#uploadWindow\').dialog(\'open\').center;">click to open</div>';
+var str = '<div data-type="upload"  style="" href="" class="fixedColumn"' + 'onclick="$(\'#uploadWindow\').dialog(\'open\').center;">click to open</div>';
 //var str = "<script>$(\'#w\').dialog(\'open\');" + "
 $.extend($.fn.datagrid.defaults.editors, {
     upload: {
@@ -546,10 +574,14 @@ $.extend($.fn.datagrid.defaults.editors, {
 function savePathToSlot()
 {
     var path = $('#uploadPath').val();
+    if(path)
+    {
     $('div[data-type ="upload"]').val(path);
-    $('div[data-type ="upload"]').text('uploaded');
+    //$('div[data-type ="upload"]').text('uploaded');
+    $('div[data-type ="upload"]').text(path);
     fileArray.length = 0;
     fidArray.length = 0;
+    }
     $("#uploadBtn").uploadify('cancel','*');
     $('#uploadWindow').dialog('close');
 }
