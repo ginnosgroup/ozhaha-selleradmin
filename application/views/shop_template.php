@@ -69,7 +69,7 @@
                                 <div class="form-group">
                                 <label for="shop-region" class="col-lg-1 control-label">餐厅区域</label>
                                 <div class="col-lg-4">
-                                  <input id="shop-region" style="width:100%;max-width:100%;" class="easyui-combobox" name="data[seller_region_id]"  class="form-control" value="{post_data[seller_region_id]}" data-options="valueField:'id',textField:'name',groupField:'group',url:'shop/seller_regions'"><!-- ,formatter:formatRegion -->
+                                  <input id="shop-region" style="width:100%;max-width:100%;" class="easyui-combobox" name="data[seller_region_id]"  class="form-control" value="{post_data[seller_region_id]}" data-options="valueField:'id',textField:'name',editable:false, groupField:'group',url:'shop/seller_regions'"><!-- ,formatter:formatRegion -->
                                 </div>
                               </div>
                               <div class="form-group">

@@ -123,6 +123,8 @@ class Shop extends CI_Controller {
 						$this->form_validation->set_rules('data[phone]', lang('shop_phone'), 'required','max_length[16]');
 						$this->form_validation->set_rules('data[hours]', lang('shop_hours'), 'required');
 						$this->form_validation->set_rules('data[lowest_price]', lang('shop_lowest_price'), 'required|numeric');
+
+						$this->form_validation->set_rules('data[seller_region_id]', '', 'required');
 						
 						if ($this->form_validation->run() == FALSE)
 				    	{		    		  		
@@ -135,6 +137,7 @@ class Shop extends CI_Controller {
 								$query = $this->db->query("SELECT count(*) as total FROM ".$this->db->dbprefix('seller')." WHERE id!='$seller_id' and name=".$this->db->escape($post_data['name'])." limit 1");
 								$row = $query->row_array();
 								//var_dump($curr_background_url);
+								var_dump($post_data['seller_region_id']);
 								if (!$row['total'])
 								{
 																				

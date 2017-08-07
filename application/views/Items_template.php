@@ -55,7 +55,7 @@
         <div class='col-lg-12'>
         <table class="easyui-datagrid" title="商品列表"  id='itemsTable' url='items_test/items_list' style="height:600px;" method='get' data-options="singleSelect:false,pagination:'true',
       autoRowHeight:'false',fitColumns:'false',valueField:'text',
-      onDblClickCell:onDblClickCell, sortName:'weight',sortOrder:'desc'" toolbar='#tb' emptyMsg='The shop currently does not have any products!'>
+      onDblClickCell:onDblClickCell,sortName:'weight',sortOrder:'desc'" toolbar='#tb' emptyMsg='The shop currently does not have any products!'>
     <thead>
       <tr>
         <th data-options="field:'id',width:50" sortable ='true'>ID</th>
@@ -211,6 +211,15 @@ $(function(){
     row.can_use_coupon = row.can_use_coupon||1;
     row.name = row.name||('菜品' + tmpItemIndex++); 
     //row.price = row.price||0;
+    //console.log(row,index);
+  
+  },
+  onBeginEdit:function(index,row)
+  {
+     if(!row.id)
+    {
+     $('tr[datagrid-row-index = ' + index +']').find('div[data-type ="upload"]').text('');
+    } 
   }
 })
 });
@@ -260,9 +269,7 @@ function endEditing(selectedIndex=''){
 
 
 function onDblClickCell(index, field){
-  
-   // editIndex = undefined;
-  //$('#itemsTable').datagrid('unselectALL');
+   
   if (editIndex != index){
       if (endEditing()){
         $('#itemsTable').datagrid('unselectAll');
@@ -350,7 +357,6 @@ function saveChanges()
     }
 }
 
-
 function saveAddedItems()
 {
   var changedRows = $('#itemsTable').datagrid('getChanges','inserted');
@@ -429,12 +435,18 @@ function addItem()
   
   checkValidation();
   endEditing();
+   $('#itemsTable').datagrid('unselectAll');
   $('#itemsTable').datagrid('insertRow',{
                             index:0,
-                            row:{}});
+                            row:{
+                              //image_url：''
+                            }});
   editIndex = 0;
+  
   $('#itemsTable').datagrid('selectRow', editIndex)
                   .datagrid('beginEdit', editIndex);
+
+ //$('#itemsTable').datagrid('getEditor', {index:editIndex,field:image_url);
 
 }
 
@@ -551,6 +563,7 @@ $.extend($.fn.datagrid.defaults.editors, {
     upload: {
         init: function(container, options){
             
+          // console.log(container.selector);
             var input = $(str).appendTo(container);
           
             return input;
@@ -573,12 +586,18 @@ $.extend($.fn.datagrid.defaults.editors, {
 });
 function savePathToSlot()
 {
+   
+   var target = $('#itemsTable').datagrid('getSelected');
+   var tarIndex = $('#itemsTable').datagrid('getRowIndex', target);
     var path = $('#uploadPath').val();
     if(path)
     {
-    $('div[data-type ="upload"]').val(path);
+      
+     $('tr[datagrid-row-index = ' + tarIndex +']').find('div[data-type ="upload"]').val(path);
+     $('tr[datagrid-row-index = ' + tarIndex +']').find('div[data-type ="upload"]').text(path);
+    //$('div[data-type ="upload"]').val(path);
     //$('div[data-type ="upload"]').text('uploaded');
-    $('div[data-type ="upload"]').text(path);
+    //$('div[data-type ="upload"]').text(path);
     fileArray.length = 0;
     fidArray.length = 0;
     }
