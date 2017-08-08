@@ -62,6 +62,7 @@ public function items_list()
 	if (!empty($get_data['category_id'])) $where .= " AND category_id like '%".$get_data['category_id']."%'";
 	if (!empty($get_data['keyword'])) $where .= " AND name like '%".$get_data['keyword']."%' 
 												 OR	 id   like '%".$get_data['keyword']."%'";
+										$where .= ' AND number !=0';			
 											
 	$query = $this->db->query("SELECT * FROM ".$this->db->dbprefix('item')." WHERE seller_id=".$seller_id .$where.' ORDER BY '.$sort.' '.$order.' LIMIT '.$offset.','.$page_rows);
 	$rows = $query->result_array();//echo 'lalaalla';
@@ -179,35 +180,39 @@ public function add_items()
 public function delete_item(){
 
 	$post_data = $this->input->post(NULL,true);
+	$this->load->library('waimai_seller');
+	$seller_id = $this->waimai_seller->check_login();
 	$delete_items = $post_data['data'];	
 	$updated;
 	$del_row;
-	
+
 	if($delete_items)
 	{
+		foreach($delete_items as &$item)
+		{
+			$item['gmt_modify'] = date('Y-m-d H:i:s');
+			$item['number'] = 0;
+		}
 		$del_rows = $this->to_item_model($delete_items);
 	}
-
+	//var_dump($del_rows);
 	$this->load->database();
 	if(!empty($del_rows))
 	{
-		foreach($del_rows as $del_row)
-		{
-			try{
-			
-			 	$this->db->delete($this->db->dbprefix('item'),$del_row);
-				}
-			catch(Exception $ex)
-			{
-				echo 'eror message: ' . $ex->getMesage();
-			}
-		}
-		$updated = 1;
-	  	$msg = array('msg'=>'ok', 'updated_rows'=>$updated);
+		
+		$updated = $this->db->update_batch($this->db->dbprefix('item'),$del_rows,'id');
+	 	if($updated)
+	 	{
+	  		$msg = array('msg'=>'ok', 'updated_rows'=>$updated);
+	  	}
+	  	else 
+	  	{
+	  	 	$msg = array('msg'=>'fail', 'update_rows'=>$updated,'details'=>$this->db->error());
+	  	} 	
 	}
 	else
 	{
-	  $msg = array('msg'=>'fail', 'updated_rows'=>$updated,'details'=>$this->db->error());
+	 $msg = array('msg'=>'error','details'=>$this->db->error());
 	}
 	$this->db->close();
 	exit(json_encode($msg));
