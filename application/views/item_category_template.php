@@ -36,6 +36,7 @@
                                 <th>编号</th>
                                 <th>分类名称</th>
                                 <th>添加时间</th>
+                                <th style='width:10%'>排序顺序</th>
                                 <th>操作</th>
                             </tr>
                             {data_list}
@@ -43,6 +44,7 @@
                                 <td>{id}</td>
                                 <td>{name}</td>
                                 <td>{gmt_create}</td>
+                                <td >{weight}</td>
                                 <td>
                                 		{if {parent_id} == null}
                                 		默认分类

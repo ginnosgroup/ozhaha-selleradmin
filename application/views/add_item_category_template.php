@@ -39,6 +39,12 @@
                               <input type="text" name="data[name]" class="form-control" id="category-name" value="{post_data[name]}" required placeholder="分类名称">
                             </div>
                         </div>
+                         <div class="form-group">
+                            <label for="classify-name" class="col-lg-1 control-label">排序</label>
+                            <div class="col-lg-4">
+                              <input type="text" name="data[weight]" class="form-control" id="category-weight" value="{post_data[weight]}" required placeholder="0-{total}">
+                            </div>
+                        </div>
                         <div class="form-group">
                             <div class="col-lg-offset-1 col-lg-4">
                               <button type="submit" id="btnsubmit" class="btn btn-primary">确认新增</button>

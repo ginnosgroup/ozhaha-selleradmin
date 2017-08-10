@@ -74,13 +74,16 @@ class operate_order extends CI_Controller {
 
 								//Joe
 								$create_panda_order = $this->create_panda_order($id);
+								$query_str = 'SELECT o.*,(s.name) as seller_name FROM '. $this->db->dbprefix('order') .' o INNER JOIN '. $this->db->dbprefix('seller') .' s ON o.seller_id = s.id'
+											." WHERE o.seller_id='$seller_id'". ' AND o.id ='.$id;
+
 								if($create_panda_order['msg']=='ok')
 								{
 									$d['delivery_code']	=$create_panda_order['data'];
 								try{
-									$query = $this->db->query("SELECT * FROM ".$this->db->dbprefix('order')." WHERE seller_id='$seller_id'". ' AND id ='.$id);
+									$query = $this->db->query($query_str);
 									$row = $query->row_array();
-									$logged = $this ->write_to_balance_log($row);
+									$logged = $this ->write_to_order_log($row);
 									$this->db->update($this->db->dbprefix('order'),$d,$w);
 								}
 								catch(Exception $e)
@@ -100,7 +103,8 @@ class operate_order extends CI_Controller {
 								{
 									echo 'fail to create panda order';
 								}
-								//usleep(2000000);
+								
+								usleep(4000000);
 								redirect('/order');
 								
 				    }
@@ -136,22 +140,21 @@ class operate_order extends CI_Controller {
 		return $str_status;
 	}
 
-	 public function write_to_balance_log($order_details)//
+	 public function write_to_order_log($order_details)//
 	{
 	 $today = new DateTime();
-	 $note = $today->format('Y-m-d H:i:s').' Shop receive the order ['.$order_details['id'].'] #success';
-	 $type = 'RECEIVE';
-	
+	 $operator_type = 'SELLER';
+	 $operator = 'WAIT'; 
 	 $insert_data = array(
                      'gmt_create' =>$today->format('Y-m-d H:i:s'),
                      'gmt_modify' =>$today->format('Y-m-d H:i:s'),
-                     'buyer_id' =>$order_details['buyer_id'],
-                     'seller_id' =>$order_details['seller_id'],
                      'order_id' =>$order_details['id'],
-                     'type' =>$type,
-                     'note' =>$note
+                     'operator_id' => $order_details['seller_id'],
+                     'operator_name' => $order_details['seller_name'],
+                     'operator_type' =>$operator_type,
+                     'operator' => $operator
 	  	);
-	  return $this->db->insert($this->db->dbprefix('balance_log'), $insert_data);
+	  return $this->db->insert($this->db->dbprefix('order_log'), $insert_data);
        
 	}
 
