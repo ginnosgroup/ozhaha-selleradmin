@@ -531,7 +531,8 @@ $config['logs_base_path']      = 'logs/';
 
 //Modified by Joe 05/06/2017
 //panda delivery 接口端， 用于调用派送员信息
-$config['deliver_request_url'] = 'api.pandadelivery.com.au'; //panda delivery 接口Url地址
+//$config['deliver_request_url'] = 'api.pandadelivery.com.au'; //panda delivery 接口Url地址
+$config['deliver_request_url'] = 'dev.pandadelivery.com.au:8443'; //panda delivery 接口Url地址
 $config['deliver_request_id'] = '21';
 $config['deliver_request_key'] = '1e50f868f3604a20b8a658c721fbdb35';
 $config['deliver_request'] = 'https://'.$config['deliver_request_id'].':'.$config['deliver_request_key'].'@'.$config['deliver_request_url'];
@@ -541,5 +542,7 @@ $config['deliver_request_id_foradmin'] = '10';
 $config['deliver_request_key_foradmin'] = '23902fd3b7b74fdcb5c5adef97ac2f68';
 $config['deliver_request_foradmin'] = 'https://'.$config['deliver_request_id_foradmin'].':'.$config['deliver_request_key_foradmin'].'@'.$config['deliver_request_url_foradmin'];
 $config['curl_timeout'] = 10;
-$config['curl_refer'] = "https://www.ozhaha.com";
+$config['curl_refer'] = "https://admintest.ozhaha.com";
+//$config['ozhaha_backend_url'] = 'https://admin.ozhaha.com';
+$config['ozhaha_backend_url'] = 'https://admintest.ozhaha.com';
 //End

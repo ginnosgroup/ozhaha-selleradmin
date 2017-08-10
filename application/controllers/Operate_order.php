@@ -161,7 +161,7 @@ class operate_order extends CI_Controller {
 	public function create_panda_order($id)
 	{
 		$list=array();
-        $config['deliver_request_curl'] = 'https://admintest.ozhaha.com/backend/Pandadelivery_api?mod=order_create_panda&order_id='.$id;
+        $config['deliver_request_curl'] = $this->config->item('ozhaha_backend_url').'/backend/Pandadelivery_api?mod=order_create_panda&order_id='.$id;
         $config['curl_data'] = '';
         $config['curl_refer'] = $this->config->item('curl_refer');
         $config['curl_timeout'] = $this->config->item('curl_timeout'); 

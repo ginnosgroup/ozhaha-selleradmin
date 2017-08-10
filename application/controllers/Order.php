@@ -416,12 +416,7 @@ class Order extends CI_Controller {
 	  if($ac=='refund')
 	  {
 	  	$note = $today->format('Y-m-d H:i:s').'商家操作退款[退款支付方式:'.$order_details['pay_type'].']#退款$'.number_format($order_details['req_refund_money'],2).'至余额成功';
-	  	$type = 'REFUNDED';
-	  }
-	  else
-	  {
-	  	$note = $today->format('Y-m-d H:i:s').'商家操作 '.$ac.'[付款方式:'.$order_details['pay_type'].'] #成功';
-	  	$type = $ac;
+	  	$type = 'REFUND';
 	  }
 
 	  $insert_data = array(
