@@ -73,38 +73,42 @@ class operate_order extends CI_Controller {
 								);						
 
 								//Joe
-								$create_panda_order = $this->create_panda_order($id);
 								$query_str = 'SELECT o.*,(s.name) as seller_name FROM '. $this->db->dbprefix('order') .' o INNER JOIN '. $this->db->dbprefix('seller') .' s ON o.seller_id = s.id'
 											." WHERE o.seller_id='$seller_id'". ' AND o.id ='.$id;
+								$query = $this->db->query($query_str);
+								$row = $query->row_array();
 
-								if($create_panda_order['msg']=='ok')
+								if(!$row['delivery_code'])
 								{
-									$d['delivery_code']	=$create_panda_order['data'];
+									$create_panda_order = $this->create_panda_order($id);
+									if($create_panda_order['msg']=='ok')
+									{
+										$d['delivery_code']	=$create_panda_order['data'];
+									}
+								}
+
 								try{
-									$query = $this->db->query($query_str);
-									$row = $query->row_array();
+									
 									$logged = $this ->write_to_order_log($row);
 									$this->db->update($this->db->dbprefix('order'),$d,$w);
 								}
 								catch(Exception $e)
 								{
-									echo 'Caught exception : '.$e->getMessage().'\n';
+									echo 'Caught exception : '. $e->getMessage().'\n';
 								}
-								}
+								
 								//End
 								
 								//如果是Panda配送，同步订单信息到Panda Delivery API
 								
 								if($create_panda_order['msg']=='ok')
 								{	
-									echo 'success, the code is '.$create_panda_order['data'];
+									$data['result_success'] = 'OPERATE SUCCESS, CODE: '.$row['delivery_code'];
 								}
 								else
 								{
-									echo 'fail to create panda order';
+									$data['validation_errors'] = 'fail to create panda order';
 								}
-								
-								usleep(4000000);
 								redirect('/order');
 								
 				    }

@@ -39,6 +39,10 @@
                         		<div style="color:red;">{validation_errors}</div>
                         		<div style="color:#669933;">{result_success}</div>
                             <form id="shop-setting" class="form-horizontal" method="post" enctype="multipart/form-data">
+                             <div class="form-group">
+                                <label for="seller_id" class="col-lg-1 control-label">商家ID:</label>
+                                <div class="col-lg-4" style="line-height: 30px;"> {seller_id}</div>
+                             </div>
                               <div class="form-group">
                                 <label for="shop-name" class="col-lg-1 control-label">餐厅名称</label>
                                 <div class="col-lg-4">

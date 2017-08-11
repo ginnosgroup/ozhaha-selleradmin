@@ -10,9 +10,8 @@
         <a class="navbar-brand" href="index.html">哈哈外卖商家后台</a>
     </div>
     <!-- /.navbar-header -->
-
     <ul class="nav navbar-top-links navbar-right">
-        <li class="dropdown">
+           <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
             </a>
@@ -25,12 +24,13 @@
         <!-- /.dropdown -->
     </ul>
     <!-- /.navbar-top-links -->
-
+    <!--implement php code to load seller_name-->
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
                 <li class="show-logo">
                     <img src="{logo_url}" alt="">
+                    <div style="font-size: 20px;color: #F0AD4E">{seller_name}</div>
                 </li>
                 <li>
                     <a href="welcome"><i class="fa fa-dashboard fa-fw"></i> 后台首页</a>

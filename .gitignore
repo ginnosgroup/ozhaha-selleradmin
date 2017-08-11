@@ -3,5 +3,5 @@ application/.htaccess
 .htaccess
 user_guide/
 uploads/
-application/cache/*
+application/cache/
 .svn
