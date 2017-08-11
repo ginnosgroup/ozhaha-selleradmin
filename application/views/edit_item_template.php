@@ -17,7 +17,6 @@
 </head>
 
 <body>
-
     <div id="wrapper">
 
         <?php $this->load->view('common_navigation_template') ?>

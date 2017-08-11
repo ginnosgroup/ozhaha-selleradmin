@@ -20,6 +20,7 @@ class Order extends CI_Controller {
 		$this->isloadtemplate = 0;		
 		$data = array(
 		    'static_base_url' => $this->config->item('static_base_url'),
+		    'seller_name' => $this->session->seller_name,
 		    'logo_url' => ($this->cache->get('logo_url'.$seller_id)!='uploads/')?($this->cache->get('logo_url'.$seller_id)):"",
 		);
 		$data['validation_errors'] = '';
@@ -99,8 +100,8 @@ class Order extends CI_Controller {
                           	$deliver_info = $this->deliver_details($row['delivery_code']);
 						    if($deliver_info['msg'] == 'ok')
                           {
-                          	$row["deliver_name"] = (isset($deliver_info['content']['name']))?$deliver_info['content']['name']:'NA';
-                            $row["deliver_phone"] = (isset($deliver_info['content']['name']))?$deliver_info['content']['phone']:'NA';
+                          	$row["deliver_name"] = (isset($deliver_info['content']['name']))?$deliver_info['content']['name']:'';
+                            $row["deliver_phone"] = (isset($deliver_info['content']['name']))?$deliver_info['content']['phone']:'';
                           }
                            else {
                           	$row["deliver_name"] = "not assigned";
@@ -110,8 +111,8 @@ class Order extends CI_Controller {
                         }
                         else{
 
-                            $row["deliver_name"] = "NA";
-                            $row["deliver_phone"] = "NA";
+                            $row["deliver_name"] = "";
+                            $row["deliver_phone"] = "";
                          }
                          //End
 						$row['show_path'] = 0;
@@ -193,6 +194,7 @@ class Order extends CI_Controller {
                                     	{
                                     		try{
                                     			$refunded = $this->refund_to_buyer($order_details['buyer_id'],$order_details['req_refund_money']);
+                                    			//var_dump($refunded);
                                     			$d['refund_price'] = $order_details['req_refund_money'];
                                     		}
                                     		catch(Exception $e)
@@ -200,12 +202,10 @@ class Order extends CI_Controller {
                                     			echo 'error: '.$e->getMessage();
                                     		}
                                     	}
-                                    	$logged = $this->write_to_balance_log($order_details, 'refund');
+                                    	$logged = $this->write_to_balance_log($order_details, 'refund').$this->write_to_order_log('CANCEL',$order_details);
+                                    	//var_dump($logged);
+                                   
                                     }
-                                   // $logged = $this->write_to_balance_log($order_details, $status);
-                            	}
-                            	else{
-                            		$logged = $this->write_to_balance_log($order_details, $status);
                             	} 
                             	//End
 								$w = array(								    
@@ -252,6 +252,24 @@ class Order extends CI_Controller {
 	}
 
 	//Joe 26/07/2017
+	 public function write_to_order_log($ac,$order_details)//
+	{
+	 $today = new DateTime();
+	 $operator_type = 'SELLER';
+	 $operator = $ac; 
+	 $insert_data = array(
+                     'gmt_create' =>$today->format('Y-m-d H:i:s'),
+                     'gmt_modify' =>$today->format('Y-m-d H:i:s'),
+                     'order_id' =>$order_details['id'],
+                     'operator_id' => $order_details['seller_id'],
+                     'operator_name' => $order_details['seller_name'],
+                     'operator_type' =>$operator_type,
+                     'operator' => $operator
+	  	);
+	  return $this->db->insert($this->db->dbprefix('order_log'), $insert_data);
+       
+	}
+
 	public function create_panda_order()
 	{
 		$list=array();
@@ -376,7 +394,8 @@ class Order extends CI_Controller {
 
 	function order_details($seller_id,$id)
 	{
-      $query = $this->db->query("SELECT* FROM ".$this->db->dbprefix('order')." WHERE seller_id='$seller_id' and id=$id LIMIT 1");
+      $query = $this->db->query('SELECT o.*,(s.name) as seller_name FROM '. $this->db->dbprefix('order') .' o INNER JOIN '. $this->db->dbprefix('seller') .' s ON o.seller_id = s.id'
+											." WHERE o.seller_id='$seller_id'". ' AND o.id ='.$id);
 	  $row = $query->row_array();
 	  $order_details = array();
       if ($row['total_price']&&$row['delivery_price'])
@@ -416,12 +435,7 @@ class Order extends CI_Controller {
 	  if($ac=='refund')
 	  {
 	  	$note = $today->format('Y-m-d H:i:s').'商家操作退款[退款支付方式:'.$order_details['pay_type'].']#退款$'.number_format($order_details['req_refund_money'],2).'至余额成功';
-	  	$type = 'REFUNDED';
-	  }
-	  else
-	  {
-	  	$note = $today->format('Y-m-d H:i:s').'商家操作 '.$ac.'[付款方式:'.$order_details['pay_type'].'] #成功';
-	  	$type = $ac;
+	  	$type = 'REFUND';
 	  }
 
 	  $insert_data = array(
@@ -431,7 +445,6 @@ class Order extends CI_Controller {
                      'seller_id' =>$order_details['seller_id'],
                      'order_id' =>$order_details['id'],
                      'type' =>$type,
-                     //'price' =>$order_details['req_refund_money'],
                      'note' =>$note
 	  	);
 	  	if($ac=='refund') 
@@ -459,11 +472,11 @@ class Order extends CI_Controller {
 	
 	public function order_itemlist($id)
 	{
-		$item_list = '';
+		$item_list='';
 		$query = $this->db->query("SELECT* FROM ".$this->db->dbprefix('order_item')." WHERE order_id=$id");
 		foreach($query->result_array() as $row)
 		{				
-				if ($item_list == '')
+				if ($item_list=='')
 				{
 						$item_list = '<div>'.$row['item_name']. '<span style ="color:#ccc">*</span>' . $row['number'].'</div>';
 				}else
@@ -471,7 +484,6 @@ class Order extends CI_Controller {
 						$item_list .='<div>'.$row['item_name'] . '<span style ="color:#ccc">*</span>' . $row['number'].'</div>';
 				} 
 		}
-		//$item_list = !empty($item_list)?$item_list:'';
 		return $item_list;
 	}	
 	

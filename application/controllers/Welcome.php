@@ -20,6 +20,7 @@ class Welcome extends CI_Controller {
 		    'seller_name' => $this->session->seller_name
 		    //'logo_url' => $this->cache->get('logo_url'.$seller_id )
 		);
+		//if(isset($_SESSION['seller_name'])) 
 		//$this->cache->save('logo_url'.$seller_id, $upload_dir.$row->logo_url, 2592000);
 		$this->load->database();
 		$query = $this->db->query("SELECT count(id) as total_order_new FROM ".$this->db->dbprefix('order')." WHERE seller_id='$seller_id' and status='NEW' LIMIT 1");
@@ -33,12 +34,14 @@ class Welcome extends CI_Controller {
 		$data['total_order_today'] = $row->total_order_today;
 		
 		//Joe
-		$query = $this->db->query("SELECT logo_url FROM ".$this->db->dbprefix('seller')." WHERE id='$seller_id'");
-		$row = $query->row();
+		$query = $this->db->query("SELECT logo_url,name FROM ".$this->db->dbprefix('seller')." WHERE id='$seller_id'");
+		$row = $query->row_array();
+		//var_dump($row);
 		if($row)
 		{
-			if(empty($data['logo_url']))$data['logo_url'] = 'uploads/'.$row->logo_url;
-			//$this->cache->save('logo_url'.$seller_id, $data['logo_url'], 2592000);
+			if(empty($data['logo_url']))$data['logo_url'] = 'uploads/'.$row['logo_url'];
+			$this->session->set_userdata('seller_name',$row['name']);
+			//$this->cache->save('seller_name'.$seller_id, $data['logo_url'], 2592000);
 		}
 		//End
 		$this->db->close();

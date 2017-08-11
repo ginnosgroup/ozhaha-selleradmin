@@ -27,16 +27,25 @@ class item_category extends CI_Controller {
 		$data['result_success'] = '';
 		
 		$post_data = $this->input->post();
+		//var_dump($post_data);
 		$this->load->database();
 		if (empty($post_data))
 		{
 				$datalist = array();
 				$query = $this->db->query("SELECT * FROM ".$this->db->dbprefix('item_category')." WHERE seller_id=$seller_id and (parent_id=0 or isnull(parent_id)) ORDER BY id ASC");
-				foreach ($query->result_array() as $row)
+				$query_array = $query->result_array();
+				array_multisort(array_column($query_array, 'weight'), SORT_ASC, $query_array);
+				//var_dump($query_array);
+
+				foreach ($query_array as $row)
 				{
 						$datalist[] = $row;
 				}
-				$data['data_list'] = $datalist;				
+				$query_total = $this->db->query("SELECT count(*) as total FROM ".$this->db->dbprefix('item_category')." WHERE seller_id=$seller_id and (parent_id=0 or isnull(parent_id)) ORDER BY id ASC");
+				 
+				$data['data_list'] = $datalist;	
+				$data['total']	= $query_total->row_array()['total'];
+				//var_dump($data['total']);	
 				$this->isloadtemplate = 1;
 		}else
 		{

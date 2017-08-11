@@ -1,6 +1,7 @@
-/application/config/*
-/application/.htaccess
+application/config/
+application/.htaccess
 .htaccess
-user_guide/*
-/uploads/*
-/application/cache/*
+user_guide/
+uploads/
+application/cache/
+.svn

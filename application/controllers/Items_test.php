@@ -62,7 +62,7 @@ public function items_list()
 	if (!empty($get_data['category_id'])) $where .= " AND category_id like '%".$get_data['category_id']."%'";
 	if (!empty($get_data['keyword'])) $where .= " AND name like '%".$get_data['keyword']."%' 
 												 OR	 id   like '%".$get_data['keyword']."%'";
-										$where .= ' AND number !=0';			
+										$where .= ' AND is_removed = 0';			
 											
 	$query = $this->db->query("SELECT * FROM ".$this->db->dbprefix('item')." WHERE seller_id=".$seller_id .$where.' ORDER BY '.$sort.' '.$order.' LIMIT '.$offset.','.$page_rows);
 	$rows = $query->result_array();//echo 'lalaalla';
@@ -148,7 +148,7 @@ public function add_items()
 		    $tmp['gmt_modify'] = date('Y-m-d H:i:s');
 			$tmp['gmt_create'] = date('Y-m-d H:i:s');
 			$tmp['number'] = $tmp['number']?$tmp['number']:100;
-			$tmp['weight'] = $tmp['weight']?$tmp['weight']:1;
+			$tmp['weight'] = $tmp['weight'];
  			$tmp['seller_id'] = $seller_id;
 		    $insert_rows[] =$tmp;
 		}
@@ -191,11 +191,10 @@ public function delete_item(){
 		foreach($delete_items as &$item)
 		{
 			$item['gmt_modify'] = date('Y-m-d H:i:s');
-			$item['number'] = 0;
+			$item['is_removed'] = 1;
 		}
 		$del_rows = $this->to_item_model($delete_items);
 	}
-	//var_dump($del_rows);
 	$this->load->database();
 	if(!empty($del_rows))
 	{
@@ -226,24 +225,29 @@ public function get_items_category()
 	$this->load->database();
 	$this->load->library('waimai_seller');
 	$seller_id = $this->waimai_seller->check_login();
-	$query_str = "SELECT id,name FROM ".$this->db->dbprefix('item_category')." WHERE seller_id=".$seller_id .'';
+	$query_str = "SELECT id,name, weight FROM ".$this->db->dbprefix('item_category')." WHERE seller_id=".$seller_id .'';
+
 	if($get_data)
 	{
 		$query_str .= ' AND id = '. $get_data['category_id'];
 	}
 	$query = $this->db->query($query_str);
 	$rows = $query->result_array();
+	array_multisort(array_column($rows, 'weight'), SORT_ASC, $rows);
 	$out = array(); 
 	foreach($rows as $row){
 
 		foreach($row as $k=>$v)
 		{
 			if($k == 'name')
-			$item[$k] = $v;				
+			$item[$k] = $v;	
+
 		}
+		unset($row['weight']);
 		$item['category_pair'] = json_encode($row);
 		$out[] = $item;
 	}
+	//var_dump($out);
 	$this->db->close();
 	exit(json_encode($out));
 
@@ -284,7 +288,7 @@ private function to_item_model($update_items)
 		return $update_rows;
 }
 
-	
+
 
 }
 

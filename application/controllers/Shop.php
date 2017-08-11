@@ -24,6 +24,7 @@ class Shop extends CI_Controller {
 		    'static_base_url' => $this->config->item('static_base_url'),
 		    'seller_name' => $this->session->seller_name,
 		    'logo_url' => ($this->cache->get('logo_url'.$seller_id)!='uploads/')?($this->cache->get('logo_url'.$seller_id)):"",
+		    'seller_id' => $seller_id
 		);
 		$data['validation_errors'] = '';
 		$data['result_success'] = '';
@@ -32,6 +33,8 @@ class Shop extends CI_Controller {
 				
 		$query = $this->db->query("SELECT * FROM ".$this->db->dbprefix('seller')." WHERE id='$seller_id' limit 1");
 		$row = $query->row_array();
+		$this->session->set_userdata('seller_name',$row['name']);
+
 		$curr_background_url = $row['background_url'];
 
 		//var_dump($row);
