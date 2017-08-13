@@ -206,7 +206,7 @@ $(function(){
   var tmpItemIndex = 1;
   $('#itemsTable').datagrid({
   onBeforeEdit: function(index,row){
-    row.number = row.number||100;
+    row.number = row.number||9999;
     row.weight = row.weight||1;
     row.can_use_coupon = row.can_use_coupon||1;
     row.name = row.name||('菜品' + tmpItemIndex++); 
