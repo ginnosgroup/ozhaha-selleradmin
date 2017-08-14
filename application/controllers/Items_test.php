@@ -97,9 +97,10 @@ public function update_items()
 	$update_rows;
 	if($update_items)
 	{
-		foreach($update_items as $item)
+		foreach($update_items as &$item)
 		{
 			$item['gmt_modify'] = date('Y-m-d H:i:s');
+			$item['image_url'] = $this->product_img_dir($item['image_url']);
 		}
 		$update_rows = $this->to_item_model($update_items);
 	}
@@ -279,13 +280,30 @@ private function to_item_model($update_items)
 		foreach($item as $k=>$v)
 		{
 			if($k == 'category_pair')
-			{$temp_item['category_id'] = $this->get_category_id($item['category_pair']);}	
+			{$temp_item['category_id'] = $this->get_category_id($item['category_pair']);}
+			// elseif($k == 'image_url')
+			// {
+			// 	//$temp_item['image_url'] = $this->move_img_dir($item['image_url']);
+			// 	//var_dump($temp_item['image_url']);
+			// }	
 			else
 			{$temp_item[$k] = $v;}
 		}
 			$update_rows[] =$temp_item;
 	}
 		return $update_rows;
+}
+
+private function product_img_dir($dir)
+{
+	$tmp_path = $this->config->item('upload_root_path').$dir;
+	$file_path = str_replace("product_tmp","product",$dir);
+	$new_path = $this->config->item('upload_root_path').$file_path;
+	//var_dump($new_path);
+	$new_dir = dirname($new_path);										
+	if(!is_dir($new_dir)) mkdir($new_dir,0777,true);
+	rename($tmp_path, $new_path);
+	return $file_path;
 }
 
 

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Croppic extends CI_Controller {
+class Croppic_save_img extends CI_Controller {
 
 public function __construct()
 {
@@ -29,14 +29,17 @@ public function upload_image()
 	$temp = explode(".", $_FILES["img"]["name"]);
 	$extension = end($temp);
 	//var_dump(expression)
-	if(!is_writable($save_path)){
-		$response = Array(
-			"status" => 'error',
-			"message" => 'Can`t upload File; no write Access'
-		);
-		exit(json_encode($response));
-		//return;
-	}
+	// if(!is_writable('/uploads/'.$save_path .'/')){
+	// 	$response = Array(
+	// 		"status" => 'error',
+	// 		"message" => 'Can`t upload File; no write Access'
+	// 	);
+	// 	exit(json_encode($response));
+	// 	//return;
+	// }
+	//var_dump($_FILES["img"]["name"]);
+
+	//var_dump($file);
 	
 	if (in_array($extension, $allowedExts))
 	  {
@@ -49,19 +52,26 @@ public function upload_image()
 		}
 	  else
 		{
-			
-	      $filename = $_FILES["img"]["tmp_name"];
-		  list($width, $height) = getimagesize( $filename );
-
-		  move_uploaded_file($filename,  $save_path . $_FILES["img"]["name"]);
-
-		  $response = array(
-			"status" => 'success',
-			"url" => $save_path.$_FILES["img"]["name"],
-			"width" => $width,
-			"height" => $height
-		  );
-		  
+	     $filename = $this->waimai_seller->do_upload_shop_image('img', $save_path,'gif|jpg|png',2048,1024,768);
+	     if($filename)
+	     {
+		 	
+		 	list($width, $height) = getimagesize($_FILES["img"]["tmp_name"]);
+		 	 $response = array(
+				"status" => 'success',
+				"url" =>   'uploads/'.$filename,
+				"width" => $width,
+				"height" => $height
+		  	);
+		 }
+		 else
+		 {
+		 	 $response = array(
+				"status" => 'error',
+				"message" => 'ERROR Return Code: '. $_FILES["img"]["error"],
+				'content' => 'size too large'
+			);	
+		 }
 		}
 	  }
 	else
@@ -76,21 +86,17 @@ public function upload_image()
 	
 }
 
-public function crop_image()
+public function del_image()
 {
 
-$file = $this->waimai_seller->do_upload_shop_image('Filedata',$save_path,'gif|jpg|png',2048,1024,768);
-
-	//var_dump($file);
-	if (1)
-	{
-		$arr =array('status'=>'success','url'=>$file,'width'=>1024,'height'=>768);
-		exit(json_encode($arr));
-	}else
-	{	
-		$arr =array('status'=>'error','message'=>'fail to upload');
-		exit(json_encode($arr));
-	}
+	$path = $this->input->post(NULL, true)['path'];
+	//var_dump($path);
+	$upload_path = $this->config->item('upload_root_path').$path;
+	if ($path && file_exists('./'.$upload_path)) unlink('./'.$upload_path);
+	$arr = array("msg" => 'ok',"content" => $upload_path);
+	$return_str = json_encode($arr);
+	exit($return_str);
+	
 }
 
 }
