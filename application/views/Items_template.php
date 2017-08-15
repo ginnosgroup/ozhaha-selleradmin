@@ -52,7 +52,7 @@
                           <div class='col-lg-12'>
                             <table class="easyui-datagrid" title="商品列表"  id='itemsTable' url='items_test/items_list' style="height:600px;" method='get' data-options="singleSelect:false,pagination:'true',
                             autoRowHeight:'false',fitColumns:'false',valueField:'text',
-                            onDblClickCell:onDblClickCell,sortName:'weight',sortOrder:'desc'" toolbar='#tb' emptyMsg='The shop currently does not have any products!'>
+                            onDblClickCell:onDblClickCell,sortName:'id',sortOrder:'desc'" toolbar='#tb' emptyMsg='The shop currently does not have any products!'>
                             <thead>
                               <tr>
                                 <th data-options="field:'id',width:50" sortable ='true'>ID</th>
@@ -78,7 +78,7 @@
                               <th data-options="field:'number',width:60,align:'center',sortable:'true',editor:{type:'numberbox'}">数量</th>
                               <th data-options="field:'can_use_coupon',width:60,align:'center',formatter:formatCoupon,editor:{type:'checkbox',options:{on:'1',off:'0'}}">可用优惠券</th>
                               <th data-options="field:'content',width:60,align:'center',editor:{type:'textbox'}">描述</th>
-                              <th class="easyui-validatebox" data-options="field:'weight',width:80,align:'center',sortable:'true',editor:{type:'numberbox',options:{}}">推荐值(0-999)</th>
+                              <th class="easyui-validatebox" data-options="field:'weight',width:80,align:'center',sortable:'true',editor:{type:'numberbox',options:{}}">排序</th>
                               <th data-options="field:'gmt_modify',width:170,align:'center',sortable:'true'">最后修改</th>
                             </tr>
                           </thead>
@@ -105,7 +105,7 @@
                     </div>
 
                     <div hidden id="uploadWindow" class="easyui-dialog" title="Upload Window" data-options='buttons:"#uploadSaveBtns",closed:true' style="padding:10px;">
-                     <div hidden id ="file_list"></div>
+                     
                   <!--    <div class="form-group">
 
                       <div class="col-md-5" style='margin-left: 31%' >
@@ -117,26 +117,32 @@
 
 
                     </div> -->
-                    <div id="croppicUpload" name='img' class='col-lg-4 cropWindow' style="" >
+                    <div id="croppicUpload" name='img' class='col-lg-4 cropWindow' style="" ></div>
+                    <div id ="imgNotes" class="noteHighlight col-md-6">注：图片不得大于2MB，长*宽上限为1600*1600</div>
                       <div id="uploadSaveBtns">
                         <a href="#" class="btn btn-success"  onclick="savePathToSlot()" style="
                         width:100%;">确认上传</a>
                       </div>
-                    </div>
+                 
 
 
                     <style>
+                      .noteHighlight {
+                        color:#C71D2A;
+                        font-size:10px;
+
+                      }
 
                       .cropWindow{
                         border:1px solid #ccc;
-                        width:600px;
-                        height:400px;
+                        width:750px;
+                        height:500px;
                       }
 
                       #uploadWindow{
                         border: 1px solid #ccc;
-                        width:630px;
-                        height:425px;
+                        width:780px;
+                        height:540px;
                         position:relative;
 
                       }
@@ -168,9 +174,9 @@
            </div>
 
            <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-           <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+           <!-- <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
            <!-- <script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script> -->
-           <script type="text/javascript" src="{static_base_url}uploadify/jquery.uploadify.min.js"></script>
+          <!--  <script type="text/javascript" src="{static_base_url}uploadify/jquery.uploadify.min.js"></script> -->
            <script type="text/javascript" src="{static_base_url}js/jquery.easyui.min.js"></script>
            <script type="text/javascript" src="{static_base_url}js/croppic.min.js"></script>
            <script>

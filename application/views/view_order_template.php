@@ -127,7 +127,7 @@
                                     <div>配送备注：{row[delivery_note]}</div>    
                                                                     
                             </div>
-                            <div style="color:#000;"><h4>操作日志</h4>
+                            <div style="color:#000;"><h4>日志</h4>
                             </div>
                             <div style="padding-left:100px;">
                                <div style = "color:#DC143C;"> {row[balance_logs]} </div>

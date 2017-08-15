@@ -164,6 +164,7 @@ class CI_Waimai_Seller {
     if (!$this->CI->upload->do_upload($userfile))
     {
     		$error = array('error' =>  $this->CI->upload->display_errors());
+    		//var_dump($error);
     		$web_path = '';
     }else
     {

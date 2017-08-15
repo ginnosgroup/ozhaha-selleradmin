@@ -19,7 +19,7 @@ class view_item extends CI_Controller {
 		$data = array(
 		    'static_base_url' => $this->config->item('static_base_url'),
 		    'seller_name' => $this->session->seller_name,
-		    'logo_url' => $this->cache->get('logo_url'.$seller_id),
+		    'logo_url' => ($this->session->seller_logo_url != 'uploads/')? $this->session->seller_logo_url :"",
 		    'upload_root_path' => $this->config->item('upload_root_path')
 		);
 		$data['validation_errors'] = '';	

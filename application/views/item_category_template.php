@@ -36,7 +36,7 @@
                                 <th>编号</th>
                                 <th>分类名称</th>
                                 <th>添加时间</th>
-                                <th style='width:10%'>排序顺序权，重数值越大,排名越靠前</th>
+                                <th style='width:10%'>排序（顺序权重 数值越大,排名越靠前）</th>
                                 <th>操作</th>
                             </tr>
                             {data_list}
@@ -99,9 +99,9 @@
 						  	{
 						  			alert("删除成功！");
 						  			location.href = strUrl;
-						  	}else if (data.msg == 'failed')
+						  	}else if (data.msg == 'error')
 						  	{
-						  			alert("删除失败！");				  		
+						  			alert("删除失败！" + data.content);				  		
 						  	}
 						  },
 						  dataType: 'json'

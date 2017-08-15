@@ -21,7 +21,7 @@ class view_order extends CI_Controller {
 		$data = array(
 		    'static_base_url' => $this->config->item('static_base_url'),
 		    'seller_name' => $this->session->seller_name,
-		    'logo_url' => $this->cache->get('logo_url'.$seller_id)
+		    'logo_url' => ($this->session->seller_logo_url != 'uploads/')? $this->session->seller_logo_url :"",
 		);
 		//Joe
 		$deliver_name = $this->input->get('deliver_name', true);

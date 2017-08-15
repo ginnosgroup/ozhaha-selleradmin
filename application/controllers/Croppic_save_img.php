@@ -52,7 +52,7 @@ public function upload_image()
 		}
 	  else
 		{
-	     $filename = $this->waimai_seller->do_upload_shop_image('img', $save_path,'gif|jpg|png',2048,1024,768);
+	     $filename = $this->waimai_seller->do_upload_shop_image('img', $save_path,'gif|jpg|png',2048,1600,1600);
 	     if($filename)
 	     {
 		 	

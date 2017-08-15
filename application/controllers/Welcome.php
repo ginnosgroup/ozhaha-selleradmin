@@ -17,11 +17,12 @@ class Welcome extends CI_Controller {
 		$seller_id = $this->waimai_seller->check_login();		
 		$data = array(
 		    'static_base_url' => $this->config->item('static_base_url'),
-		    'seller_name' => $this->session->seller_name
-		    //'logo_url' => $this->cache->get('logo_url'.$seller_id )
+		    'seller_name' => $this->session->seller_name,
+		    //'logo_url' => ($this->session->seller_logo_url != 'uploads/')? $this->session->seller_logo_url :"",
 		);
 		//if(isset($_SESSION['seller_name'])) 
 		//$this->cache->save('logo_url'.$seller_id, $upload_dir.$row->logo_url, 2592000);
+		//var_dump($data['logo_url']);
 		$this->load->database();
 		$query = $this->db->query("SELECT count(id) as total_order_new FROM ".$this->db->dbprefix('order')." WHERE seller_id='$seller_id' and status='NEW' LIMIT 1");
 		$row = $query->row();
@@ -41,7 +42,7 @@ class Welcome extends CI_Controller {
 		{
 			if(empty($data['logo_url']))$data['logo_url'] = 'uploads/'.$row['logo_url'];
 			$this->session->set_userdata('seller_name',$row['name']);
-			//$this->cache->save('seller_name'.$seller_id, $data['logo_url'], 2592000);
+			$this->session->set_userdata('seller_logo_url','uploads/'.$row['logo_url']);
 		}
 		//End
 		$this->db->close();

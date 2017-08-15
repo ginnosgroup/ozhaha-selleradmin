@@ -20,7 +20,7 @@ public function index()
 	$data = array(
 		    'static_base_url' => $this->config->item('static_base_url'),
 		    'seller_name' => $this->session->seller_name,
-		    'logo_url' => ($this->cache->get('logo_url'.$seller_id)!='uploads/')?($this->cache->get('logo_url'.$seller_id)):"",
+		    'logo_url' => ($this->session->seller_logo_url != 'uploads/')? $this->session->seller_logo_url :"",
 		    'upload_root_path' => $this->config->item('upload_root_path')
 			);
 	$data['validation_errors'] = '';
@@ -56,14 +56,16 @@ public function items_list()
 	$offset = ($page-1)*$page_rows;
 	$this->load->database();
 
-	$query = $this->db->query("SELECT count(*) as total FROM ".$this->db->dbprefix('item')." WHERE seller_id=".$seller_id);
-	$total = $query->row()->total;
+	
 
 	if (!empty($get_data['category_id'])) $where .= " AND category_id like '%".$get_data['category_id']."%'";
 	if (!empty($get_data['keyword'])) $where .= " AND name like '%".$get_data['keyword']."%' 
 												 OR	 id   like '%".$get_data['keyword']."%'";
-										$where .= ' AND is_removed = 0';			
-											
+										$where .= ' AND is_removed = 0';	
+
+	$query = $this->db->query("SELECT count(*) as total FROM ".$this->db->dbprefix('item')." WHERE seller_id=".$seller_id . $where);
+	$total = $query->row()->total;
+
 	$query = $this->db->query("SELECT * FROM ".$this->db->dbprefix('item')." WHERE seller_id=".$seller_id .$where.' ORDER BY '.$sort.' '.$order.' LIMIT '.$offset.','.$page_rows);
 	$rows = $query->result_array();//echo 'lalaalla';
 
