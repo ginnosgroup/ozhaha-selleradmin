@@ -37,8 +37,6 @@ class Shop extends CI_Controller {
 		$this->session->set_userdata('seller_logo_url','uploads/'.$row['logo_url']);
 
 		$curr_background_url = $row['background_url'];
-
-		//var_dump($row);
 		if ($row)
 		{
 				$upload_dir = $this->config->item('upload_root_path');
@@ -92,8 +90,7 @@ class Shop extends CI_Controller {
 								$int_type = 1; 	
 						}
 						$data['post_data[delivery_type]'.$int_type] = $this->waimai_seller->set_form_selected($int_type,2);
-						$data['post_data[notice]'] = $row['notice'];
-						//var_dump($data);				
+						$data['post_data[notice]'] = $row['notice'];			
 						$this->isloadtemplate = 1;	
 				}
 				else
@@ -140,8 +137,6 @@ class Shop extends CI_Controller {
 								
 								$query = $this->db->query("SELECT count(*) as total FROM ".$this->db->dbprefix('seller')." WHERE id!='$seller_id' and name=".$this->db->escape($post_data['name'])." limit 1");
 								$row = $query->row_array();
-								//var_dump($curr_background_url);
-								var_dump($post_data['seller_region_id']);
 								if (!$row['total'])
 								{
 																				
@@ -290,7 +285,6 @@ public function udpate_seller_rest_days($arr)
     }   
     foreach($rest_days as $day)
    	{
-  		//var_dump(!in_array($day, $c_days1));
         if(!in_array($day, $c_days))
         {
            $d = array(

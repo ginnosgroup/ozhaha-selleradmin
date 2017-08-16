@@ -28,7 +28,7 @@ public function upload_image()
 	$allowedExts = array("gif", "jpeg", "jpg", "png", "GIF", "JPEG", "JPG", "PNG");
 	$temp = explode(".", $_FILES["img"]["name"]);
 	$extension = end($temp);
-	//var_dump(expression)
+
 	// if(!is_writable('/uploads/'.$save_path .'/')){
 	// 	$response = Array(
 	// 		"status" => 'error',
@@ -37,10 +37,6 @@ public function upload_image()
 	// 	exit(json_encode($response));
 	// 	//return;
 	// }
-	//var_dump($_FILES["img"]["name"]);
-
-	//var_dump($file);
-	
 	if (in_array($extension, $allowedExts))
 	  {
 	  if ($_FILES["img"]["error"] > 0)
@@ -90,7 +86,6 @@ public function del_image()
 {
 
 	$path = $this->input->post(NULL, true)['path'];
-	//var_dump($path);
 	$upload_path = $this->config->item('upload_root_path').$path;
 	if ($path && file_exists('./'.$upload_path)) unlink('./'.$upload_path);
 	$arr = array("msg" => 'ok',"content" => $upload_path);

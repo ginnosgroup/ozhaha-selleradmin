@@ -27,7 +27,6 @@ class item_category extends CI_Controller {
 		$data['result_success'] = '';
 		
 		$post_data = $this->input->post();
-		//var_dump($post_data);
 		$this->load->database();
 		if (empty($post_data))
 		{
@@ -35,7 +34,6 @@ class item_category extends CI_Controller {
 			$query = $this->db->query("SELECT * FROM ".$this->db->dbprefix('item_category')." WHERE seller_id=$seller_id and (parent_id=0 or isnull(parent_id)) ORDER BY id ASC");
 			$query_array = $query->result_array();
 			array_multisort(array_column($query_array, 'weight'), SORT_DESC, $query_array);
-				//var_dump($query_array);
 
 			foreach ($query_array as $row)
 			{
@@ -45,7 +43,6 @@ class item_category extends CI_Controller {
 
 			$data['data_list'] = $datalist;	
 			$data['total']	= $query_total->row_array()['total'];
-				//var_dump($data['total']);	
 			$this->isloadtemplate = 1;
 		}else
 		{
@@ -53,7 +50,7 @@ class item_category extends CI_Controller {
 			{
 
 				$id = $post_data['id'];	
-				$query1 = $this->db->query("SELECT count(*) as total FROM ".$this->db->dbprefix('item')." WHERE seller_id=$seller_id and category_id = $id LIMIT 1");
+				$query1 = $this->db->query("SELECT count(*) as total FROM ".$this->db->dbprefix('item')." WHERE seller_id=$seller_id and category_id = $id  AND is_removed = 0 LIMIT 1");
 				
 				$is_product_category =  (int) $query1->row_array()['total'];
 				if($is_product_category == 0)

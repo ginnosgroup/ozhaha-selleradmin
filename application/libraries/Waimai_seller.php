@@ -160,11 +160,9 @@ class CI_Waimai_Seller {
 		}
     $this->CI->load->library('upload', $config);
    	$this->CI->upload->initialize($config);
-   	//var_dump($this->CI->upload->do_upload($userfile));
     if (!$this->CI->upload->do_upload($userfile))
     {
     		$error = array('error' =>  $this->CI->upload->display_errors());
-    		//var_dump($error);
     		$web_path = '';
     }else
     {

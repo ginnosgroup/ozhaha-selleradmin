@@ -21,10 +21,10 @@ class change_passwd extends CI_Controller {
 		$data = array(
 		    'static_base_url' => $this->config->item('static_base_url'),
 		    //Joe
-			//'seller_name' => $this->session->seller_name,
+			'seller_name' => $this->session->seller_name,
 			'seller_phone' => $this->session->seller_phone,
 			//End
-		    'logo_url' => ($this->cache->get('logo_url'.$seller_id)!='uploads/')?($this->cache->get('logo_url'.$seller_id)):"",
+		    'logo_url' => ($this->session->seller_logo_url != 'uploads/')? $this->session->seller_logo_url :"",
 		);
 		$data['validation_errors'] = '';
 		$data['result_success'] = '';

@@ -22,7 +22,6 @@ class Welcome extends CI_Controller {
 		);
 		//if(isset($_SESSION['seller_name'])) 
 		//$this->cache->save('logo_url'.$seller_id, $upload_dir.$row->logo_url, 2592000);
-		//var_dump($data['logo_url']);
 		$this->load->database();
 		$query = $this->db->query("SELECT count(id) as total_order_new FROM ".$this->db->dbprefix('order')." WHERE seller_id='$seller_id' and status='NEW' LIMIT 1");
 		$row = $query->row();
@@ -37,7 +36,6 @@ class Welcome extends CI_Controller {
 		//Joe
 		$query = $this->db->query("SELECT logo_url,name FROM ".$this->db->dbprefix('seller')." WHERE id='$seller_id'");
 		$row = $query->row_array();
-		//var_dump($row);
 		if($row)
 		{
 			if(empty($data['logo_url']))$data['logo_url'] = 'uploads/'.$row['logo_url'];

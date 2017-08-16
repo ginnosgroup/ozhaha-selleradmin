@@ -194,8 +194,7 @@ class Order extends CI_Controller {
                                     	{
                                     		try{
                                     			$refunded = $this->refund_to_buyer($order_details['buyer_id'],$order_details['req_refund_money']);
-                                    			//var_dump($refunded);
-                                    			$d['refund_price'] = $order_details['req_refund_money'];
+                                         			$d['refund_price'] = $order_details['req_refund_money'];
                                     		}
                                     		catch(Exception $e)
                                     		{
@@ -203,7 +202,6 @@ class Order extends CI_Controller {
                                     		}
                                     	}
                                     	$logged = $this->write_to_balance_log($order_details, 'refund').$this->write_to_order_log('CANCEL',$order_details);
-                                    	//var_dump($logged);
                                    
                                     }
                             	} 
@@ -451,7 +449,6 @@ class Order extends CI_Controller {
 	  	{
 	  		$insert_data['price'] = $order_details['req_refund_money'];
 	  	}
-	  //var_dump($insert_data);	
 	  return $this->db->insert($this->db->dbprefix('balance_log'), $insert_data);
        
 	}

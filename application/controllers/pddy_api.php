@@ -6,7 +6,6 @@ class Pddy_api extends CI_Controller {
 public function index()
 {
 	$get_data = $this->input->get(NULL,true);
-	//var_dump($post_data);
 	if(!$get_data)
 	{   
 		$result =array(

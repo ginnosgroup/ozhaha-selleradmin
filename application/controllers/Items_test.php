@@ -59,13 +59,12 @@ public function items_list()
 	
 
 	if (!empty($get_data['category_id'])) $where .= " AND category_id like '%".$get_data['category_id']."%'";
-	if (!empty($get_data['keyword'])) $where .= " AND name like '%".$get_data['keyword']."%' 
-												 OR	 id   like '%".$get_data['keyword']."%'";
+	if (!empty($get_data['keyword'])) $where .= " AND ( name like '%".$get_data['keyword']."%' 
+												 OR	 id   like '%".$get_data['keyword']."%')";
 										$where .= ' AND is_removed = 0';	
 
 	$query = $this->db->query("SELECT count(*) as total FROM ".$this->db->dbprefix('item')." WHERE seller_id=".$seller_id . $where);
 	$total = $query->row()->total;
-
 	$query = $this->db->query("SELECT * FROM ".$this->db->dbprefix('item')." WHERE seller_id=".$seller_id .$where.' ORDER BY '.$sort.' '.$order.' LIMIT '.$offset.','.$page_rows);
 	$rows = $query->result_array();//echo 'lalaalla';
 
