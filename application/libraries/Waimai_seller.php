@@ -383,6 +383,71 @@ class CI_Waimai_Seller {
 
 		return $row;
 	}
+
+	function write_to_order_log($ac, $order_details)//
+	{
+	 $today = new DateTime();
+	 $operator_type = 'SELLER';
+	 $operator = $ac; 
+	 $insert_data = array(
+                     'gmt_create' =>$today->format('Y-m-d H:i:s'),
+                     'gmt_modify' =>$today->format('Y-m-d H:i:s'),
+                     'order_id' =>$order_details['id'],
+                     'operator_id' => $order_details['seller_id'],
+                     'operator_name' => $order_details['seller_name'],
+                     'operator_type' =>$operator_type,
+                     'operator' => $operator
+	  	);
+	  return $this->CI->db->insert($this->CI->db->dbprefix('order_log'), $insert_data);
+       
+	}
+
+	function panda_submit_curl($method,$headers,$config){
+        
+       $ch = curl_init();
+		curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
+		curl_setopt($ch, CURLOPT_URL, $config['deliver_request_curl']);
+		curl_setopt($ch, CURLOPT_REFERER, $config['curl_refer']); 
+		curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
+		if ($method == 'post')
+		{
+				curl_setopt($ch, CURLOPT_POST, 1);
+				
+		}elseif ($method == 'put')
+		{
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+		}
+		if ($method == 'post' || $method == 'put') curl_setopt($ch, CURLOPT_POSTFIELDS, $config['curl_data']);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, CURLOPT_TIMEOUT,$config['curl_timeout']);
+		curl_setopt($ch, CURLOPT_ENCODING, "");
+		$out = curl_exec($ch);
+		$httpinfo = curl_getinfo($ch);
+		curl_close($ch);
+		if ($httpinfo['http_code'] != '200') $out = '300';
+		//var_dump($httpinfo['http_code']);
+		return $out;
+       
+	}
+    
+    function request_api_header()
+	{
+		$headers = array();
+		$headers[] = 'X-Apple-Tz: 0';
+		$headers[] = 'X-Apple-Store-Front: 143444,12';
+		$headers[] = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
+		$headers[] = 'Accept-Encoding: gzip, deflate, sdch';
+		$headers[] = 'Accept-Language: zh-CN,zh;q=0.8';
+		$headers[] = 'Cache-Control: no-cache';
+		$headers[] = 'User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36';
+		$headers[] = 'X-MicrosoftAjax: Delta=true';
+		$headers[] = 'Content-type: application/json';
+		return $headers;
+	}
 //End
 // --------------------------------------------------------------------
 

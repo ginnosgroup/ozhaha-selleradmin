@@ -89,7 +89,7 @@ class operate_order extends CI_Controller {
 
 								try{
 									
-									$logged = $this ->write_to_order_log($row);
+									$logged =  $this->waimai_seller->write_to_order_log('WAIT',$row);
 									$this->db->update($this->db->dbprefix('order'),$d,$w);
 								}
 								catch(Exception $e)
@@ -142,24 +142,6 @@ class operate_order extends CI_Controller {
 				$str_status = $row['status'];
 		}
 		return $str_status;
-	}
-
-	 public function write_to_order_log($order_details)//
-	{
-	 $today = new DateTime();
-	 $operator_type = 'SELLER';
-	 $operator = 'WAIT'; 
-	 $insert_data = array(
-                     'gmt_create' =>$today->format('Y-m-d H:i:s'),
-                     'gmt_modify' =>$today->format('Y-m-d H:i:s'),
-                     'order_id' =>$order_details['id'],
-                     'operator_id' => $order_details['seller_id'],
-                     'operator_name' => $order_details['seller_name'],
-                     'operator_type' =>$operator_type,
-                     'operator' => $operator
-	  	);
-	  return $this->db->insert($this->db->dbprefix('order_log'), $insert_data);
-       
 	}
 
 	public function create_panda_order($id)

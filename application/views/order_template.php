@@ -285,7 +285,7 @@
 							  	if (data.msg == 'ok')
 							  	{
 							  			layer.msg("配送确认成功！",{icon: 1,shade: 0.3,time:2000},function(){
-								  					window.location.reload(true);
+								  					window.location.reload(true);			
 								  		});
 							  	}else if (data.msg == 'failed')
 							  	{							  			
@@ -321,7 +321,7 @@
 							  	{
 							  			//console.log(data);
 							  			layer.msg("成功取消订单！",{icon: 1,shade: 0.3,time:2000},function(){
-								  					//window.location.reload(true);
+								  					window.location.reload(true);
 								  		});
 							  	}else if (data.msg == 'failed')
 							  	{
