@@ -139,7 +139,13 @@
                                       <!-- <option value="SELF"{post_data[delivery_type]0}>商家自己配送</option> -->
                                   </select>
                                 </div>
-                              </div>                              
+                              </div> 
+                                 <div class="form-group">
+                                <label for="shop-notice" class="col-lg-1 control-label">支付方式支持</label>
+                                <div class="col-lg-6">
+                                 {make_paytypes_availibility_form}
+                                </div>
+                              </div>                             
                               <div class="form-group">
                                 <label for="shop-notice" class="col-lg-1 control-label">餐厅公告</label>
                                 <div class="col-lg-4">

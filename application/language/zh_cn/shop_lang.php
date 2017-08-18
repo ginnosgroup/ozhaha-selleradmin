@@ -5,7 +5,15 @@ $lang['shop_coordinate'] = '餐厅坐标';
 $lang['shop_phone'] = '餐厅电话';
 $lang['shop_hours'] = '营业时间';
 $lang['shop_lowest_price'] = '最低起送价';
+$lang['shop_paytypes'] = '支付支持方式';
 $lang['shop_validation_4'] = '餐厅类型 必须选择.';
 $lang['shop_error_1'] = '店铺不存在，更新失败。';
 $lang['shop_error_2'] = '店铺名称已经存在，请确认输入。';
 $lang['shop_success_1'] = '更新设置成功。';
+
+$lang['shop_paytype_wechat'] = '微信支付';
+$lang['shop_paytype_paypal'] = 'PAYPAL';
+$lang['shop_paytype_offline'] = '货到付款';
+$lang['shop_paytype_balance'] = '余额支付';
+
+

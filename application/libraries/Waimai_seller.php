@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /** 
- * author:dmh describe:哈哈网外卖 - 商家自定义类
+ * author:dmh describe:鹿镁鹿镁脥酶脥芒脗么 - 脡脤录脪脳脭露篓脪氓脌脿
  *
  */
 class CI_Waimai_Seller {
@@ -34,7 +34,7 @@ class CI_Waimai_Seller {
 	// --------------------------------------------------------------------
 
 	/**
-	 * author:dmh describe:检查商家是否登录
+	 * author:dmh describe:录矛虏茅脡脤录脪脢脟路帽碌脟脗录
 	 */
 	public function check_login()
 	{
@@ -51,8 +51,8 @@ class CI_Waimai_Seller {
 	}
 	
 	/**
-	 * author:dmh describe:select下拉列表框设置选中
-	 * @param $v 当前值;$length 下拉列表选项数
+	 * author:dmh describe:select脧脗脌颅脕脨卤铆驴貌脡猫脰脙脩隆脰脨
+	 * @param $v 碌卤脟掳脰碌;$length 脧脗脌颅脕脨卤铆脩隆脧卯脢媒
 	 */
 	public function set_form_selected($v,$length)
 	{
@@ -71,8 +71,8 @@ class CI_Waimai_Seller {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * author:dmh describe:商家类型下拉列表
-	 * @param $v 当前selected值
+	 * author:dmh describe:脡脤录脪脌脿脨脥脧脗脌颅脕脨卤铆
+	 * @param $v 碌卤脟掳selected脰碌
 	 */
 	public function make_form_select_shoptype($v)
 	{
@@ -96,12 +96,11 @@ class CI_Waimai_Seller {
 		$this->str_shop_type_list = $strvalue;
 		return $strHtml;		
 	}
-
 	// --------------------------------------------------------------------
 	
 	/**
-	 * author:dmh describe:生成商家类别多选框
-	 * @param $seller_id 当前商家的ID
+	 * author:dmh describe:脡煤鲁脡脡脤录脪脌脿卤冒露脿脩隆驴貌
+	 * @param $seller_id 碌卤脟掳脡脤录脪碌脛ID
 	 */
 	public function make_form_seller_category($seller_id,$post_category)
 	{
@@ -128,8 +127,8 @@ class CI_Waimai_Seller {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * author:dmh describe:获取商家类别
-	 * @param $seller_id 当前商家的ID
+	 * author:dmh describe:禄帽脠隆脡脤录脪脌脿卤冒
+	 * @param $seller_id 碌卤脟掳脡脤录脪碌脛ID
 	 */
 	public function get_seller_category($seller_id)
 	{
@@ -141,7 +140,7 @@ class CI_Waimai_Seller {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * author:dmh describe:上传图片
+	 * author:dmh describe:脡脧麓芦脥录脝卢
 	 * @param
 	 */
 	public function do_upload_shop_image($userfile,$upload_path,$allowed_types,$max_size,$max_width,$max_height)
@@ -177,8 +176,8 @@ class CI_Waimai_Seller {
 	// --------------------------------------------------------------------
 
 	/**
-	* author:dmh describe:餐厅商品类型下拉列表
-	* @param $v 当前selected值
+	* author:dmh describe:虏脥脤眉脡脤脝路脌脿脨脥脧脗脌颅脕脨卤铆
+	* @param $v 碌卤脟掳selected脰碌
 	*/
 	public function make_form_select_shop_item_category($v)
 	{
@@ -207,8 +206,8 @@ class CI_Waimai_Seller {
 	// --------------------------------------------------------------------
 	
 	/**
-	* author:dmh describe:返回餐厅订单状态
-	* @param $status 订单状态值
+	* author:dmh describe:路碌禄脴虏脥脤眉露漏碌楼脳麓脤卢
+	* @param $status 露漏碌楼脳麓脤卢脰碌
 	*/
 	public function order_status($status)
 	{
@@ -241,8 +240,8 @@ class CI_Waimai_Seller {
 	// --------------------------------------------------------------------
 	
 	/**
-	* author:dmh describe:返回配送方式文本值
-	* @param $value 传入参数
+	* author:dmh describe:路碌禄脴脜盲脣脥路陆脢陆脦脛卤戮脰碌
+	* @param $value 麓芦脠毛虏脦脢媒
 	*/
 	public function order_delivery_type($value)
 	{
@@ -261,7 +260,7 @@ class CI_Waimai_Seller {
 	}
 	
 	// --------------------------------------------------------------------
-    //Joe 返回付款类型 PAYPAL, 线下支付 和未选择 2017/06/14
+    //Joe 路碌禄脴赂露驴卯脌脿脨脥 PAYPAL, 脧脽脧脗脰搂赂露 潞脥脦麓脩隆脭帽 2017/06/14
    public function order_pay_type($value)
    {
    	  $this->CI->lang->load('order');
@@ -370,13 +369,13 @@ class CI_Waimai_Seller {
   		return $str;
 	}
 
-	function is_rest_day($rest_day,$day)
+	public function is_rest_day($rest_day,$day)
 	{
     	if(in_array($day,$rest_day)) return 1;
     	return 0;
 	}
 	
-	function get_seller_rest_date($seller_id)
+	public function get_seller_rest_date($seller_id)
  	{
     	$query = $this->CI->db->query("SELECT id, type, value FROM ".$this->CI->db->dbprefix('seller_restdate')." WHERE seller_id=".$seller_id);
 		$row = $query->result_array();
@@ -384,7 +383,7 @@ class CI_Waimai_Seller {
 		return $row;
 	}
 
-	function write_to_order_log($ac, $order_details)//
+	public function write_to_order_log($ac, $order_details)//
 	{
 	 $today = new DateTime();
 	 $operator_type = 'SELLER';
@@ -402,7 +401,29 @@ class CI_Waimai_Seller {
        
 	}
 
-	function panda_submit_curl($method,$headers,$config){
+	public function make_seller_paytypes_availibility_form($str_types)
+	{
+		$this->CI->lang->load('shop');
+		$all_types = array('PAYPAL','BALANCE','OFFLINE','WECHAT');
+		$strHTML='';
+		if($str_types)
+		{
+			$supported_pay_types = explode(",", $str_types);
+		}
+		else
+		{
+			$supported_pay_types  = $all_types;
+		}	
+		foreach ($all_types as $type)
+		{				
+				$strHTML .= '<label class="checkbox-inline"><input type="checkbox" calss="checkbox" name="data[paytpyes_availibility][]" id="paytpyes_availibility" value="'.strtolower($type).'"';
+				if (in_array($type,$supported_pay_types)) $strHTML .= ' checked';
+				$strHTML .= '> '.lang('shop_paytype_'.strtolower($type)).'</label>';
+		}
+		return $strHTML;		
+	}
+
+	public function panda_submit_curl($method,$headers,$config){
         
        $ch = curl_init();
 		curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
@@ -434,7 +455,7 @@ class CI_Waimai_Seller {
        
 	}
     
-    function request_api_header()
+    public function request_api_header()
 	{
 		$headers = array();
 		$headers[] = 'X-Apple-Tz: 0';

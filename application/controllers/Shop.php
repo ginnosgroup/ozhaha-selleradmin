@@ -64,6 +64,7 @@ class Shop extends CI_Controller {
 						$data['make_form_seller_category'] = $this->waimai_seller->make_form_seller_category($seller_id,array());
   						//Joe
 						$data['make_rest_days_form'] = $this->waimai_seller->make_rest_days_form($seller_id);
+						$data['make_paytypes_availibility_form'] = $this->waimai_seller->make_seller_paytypes_availibility_form($row['pay_types']);
 						$data['post_data[seller_region_id]'] = $row['seller_region_id'];
 						//End
 						$data['post_data[name]'] = $row['name'];												
@@ -98,6 +99,7 @@ class Shop extends CI_Controller {
 						$data['make_form_seller_category'] = $this->waimai_seller->make_form_seller_category($seller_id,$post_data['category_id']);
 						//JOe
 						$data['make_rest_days_form'] = $this->waimai_seller->make_rest_days_form($seller_id);
+						$data['make_paytypes_availibility_form'] = $this->waimai_seller->make_seller_paytypes_availibility_form($row['pay_types']);
 						//End
 						$this->load->library('form_validation');
 						$this->lang->load('shop');
@@ -124,7 +126,9 @@ class Shop extends CI_Controller {
 						$this->form_validation->set_rules('data[phone]', lang('shop_phone'), 'required','max_length[16]');
 						$this->form_validation->set_rules('data[hours]', lang('shop_hours'), 'required');
 						$this->form_validation->set_rules('data[lowest_price]', lang('shop_lowest_price'), 'required|numeric');
-
+						//Joe on 18/08/2017
+						$this->form_validation->set_rules('data[paytpyes_availibility]', lang('shop_paytypes'), 'required');
+						//
 						$this->form_validation->set_rules('data[seller_region_id]', '', 'required');
 						
 						if ($this->form_validation->run() == FALSE)
@@ -142,8 +146,6 @@ class Shop extends CI_Controller {
 																				
 										$post_data['shop-logo'] = $this->waimai_seller->do_upload_shop_image('shop-logo','logo','gif|jpg|png',2048,1024,768);
 										$post_data['shop-cover'] = $this->waimai_seller->do_upload_shop_image('shop-cover','cover','gif|jpg|png',2048,1024,768);
-										//$this->cache->save('logo_url'.$seller_id, $upload_dir.$post_data['shop-logo'], 2592000);
-										//É¾³ý¾ÉµÄshop-logo/shop-cover												
 										if ($post_data['shop-logo'] && file_exists('./'.$old['shop-logo'])) unlink('./'.$old['shop-logo']);
 										if ($post_data['shop-cover'] && file_exists('./'.$old['shop-cover'])) unlink('./'.$old['shop-cover']);
 										//·Ö¸îlon/lat
@@ -160,7 +162,7 @@ class Shop extends CI_Controller {
 										}
 										//here to code shop cover upload; 2017/06/21 Joe 
 										
-										//$cover_url = $this -> rand_seller_category_cover($seller_id);
+										$pay_types = $this->get_pay_types($post_data['paytpyes_availibility']);
 
 										//End
 										//¸üÐÂ²Ù×÷							
@@ -173,8 +175,7 @@ class Shop extends CI_Controller {
 										    'phone' => $post_data['phone'],
 										    'email' => $post_data['email'],
 										    'state' => $post_data['str_state'],
-										    // 'business_start_time' => $post_data['business_start_time'],
-										    // 'business_end_time' => $post_data['business_end_time'],
+										    'pay_types' => $pay_types,
 											'business_times' =>$post_data['hours'],
 											'seller_region_id' => $post_data['seller_region_id'],
 										    'lowest_price' => $post_data['lowest_price'],
@@ -192,6 +193,7 @@ class Shop extends CI_Controller {
                                         $this->udpate_seller_rest_days($arr);
                                         //JOe
 										$data['make_rest_days_form'] = $this->waimai_seller->make_rest_days_form($seller_id);
+										$data['make_paytypes_availibility_form'] = $this->waimai_seller->make_seller_paytypes_availibility_form($pay_types);
 										    //End
 										//End
 										$w = array(
@@ -374,6 +376,23 @@ public function udpate_seller_rest_days($arr)
 
 		$this->db->close();
 		exit(json_encode($sub_regions));
+	}
+
+		private function get_pay_types($paytpyes_availibility)
+	{
+			if(in_array('wechat',$paytpyes_availibility)
+			&&in_array('paypal',$paytpyes_availibility)
+			&&in_array('offline',$paytpyes_availibility)
+			&&in_array('balance',$paytpyes_availibility))
+			{	
+				$pay_types = null;
+			}	
+			else
+			{	
+				$pay_types = (strtoupper(implode(',',$paytpyes_availibility)));
+			}
+
+			return $pay_types;
 	}
 	
 }

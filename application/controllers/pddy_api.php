@@ -55,15 +55,16 @@ class Pddy_api extends CI_Controller {
 			$this->db->where('delivery_code', $data['order_code']);
 			$out = $this->db->update('ozhaha_wm_order', $update_data);
 			if($out) {
-				$result = array('code'=> 0,'data' =>$out );
+
 				$order = $this->order_details($data['order_code']);
+				$logged = '';
 				if($order)
 				{
 					$logged = $this->waimai_seller->write_to_order_log('DONE',$order);
-
 				}
+				$result = array('code'=> 0,'data' =>$out ,'logged'=>$logged);
 			}
-			else $result = array('code'=> 1,'data' =>'fail to update' ,'logged'=>$logged);
+			else $result = array('code'=> 1,'data' =>'fail to update');
 
 			break;
 			case 'WAIT':
@@ -73,7 +74,16 @@ class Pddy_api extends CI_Controller {
 				);
 			$this->db->where('delivery_code', $data['order_code']);
 			$out = $this->db->update('ozhaha_wm_order', $update_data);
-			if($out) $result = array('code'=> 0,'data' =>$out );
+			if($out) {
+				$order = $this->order_details($data['order_code']);
+				$logged = '';
+				if($order)
+				{
+					$logged = $this->waimai_seller->write_to_order_log('DELIVERY',$order);
+
+				}
+				$result = array('code'=> 0,'data' =>$out,,'logged'=>$logged);
+				}
 			else $result = array('code'=> 1,'data' =>'fail to update' );
 			break;
 
